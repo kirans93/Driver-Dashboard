@@ -1,0 +1,43 @@
+image: maven:3.9.4-eclipse-temurin-17
+
+stages:
+  - build
+  - test
+  - package
+  - deploy
+
+cache:
+  paths:
+    - .m2/repository
+
+build-job:
+  stage: build
+  script:
+    - mvn clean compile
+  only:
+    - main
+
+test-job:
+  stage: test
+  script:
+    - mvn test
+  only:
+    - main
+
+package-job:
+  stage: package
+  script:
+    - mvn clean package -DskipTests
+  artifacts:
+    paths:
+      - target/*.jar
+  only:
+    - main
+
+deploy-job:
+  stage: deploy
+  script:
+    - echo "Deploying your Spring Boot App..."
+  when: manual     # you can run it with one click
+  only:
+    - main
